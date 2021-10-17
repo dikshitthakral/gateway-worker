@@ -4,12 +4,19 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "npm run test"
+    "start": "tsc && node dist/server.js",
+    "test": "jest --verbose",
+    "test:cov": "npm run test -- --coverage",
+    "test:watch": "npm run test -- --watch",
+    "build": "tsc",
+    "watch-ts": "tsc -w",
+    "lint": "eslint ./src/**/*.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^27.0.2",
+    "@types/lodash": "^4.14.175",
     "@types/mongodb": "^4.0.7",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^16.11.0",
@@ -26,6 +33,8 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
-    "mongoose": "^6.0.11"
+    "lodash": "^4.17.21",
+    "mongoose": "^6.0.11",
+    "winston": "^3.3.3"
   }
 }
