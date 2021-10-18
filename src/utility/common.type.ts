@@ -14,3 +14,5 @@ export interface IErrorListDetail {
 export interface IErrorList {
     [key: string]: IErrorListDetail;
 }
+
+export type NewEntity<T> = Omit<T, 'id'>;

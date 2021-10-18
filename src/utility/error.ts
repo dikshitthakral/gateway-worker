@@ -3,7 +3,8 @@ import { StatusCode } from './http.enum';
 
 enum ErrorCode {
     UNAUTHORIZED = 'UNAUTHORIZED',
-    INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR'
+    INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
+    ACCESS_TOKEN_NOT_FOUND = 'ACCESS_TOKEN_NOT_FOUND'
 }
 
 const ErrorList: IErrorList = {
@@ -15,6 +16,10 @@ const ErrorList: IErrorList = {
         statusCode: StatusCode.Internal_Server_Error,
         message: 'Error occured while performing a particular action.'
     },
+    [ErrorCode.ACCESS_TOKEN_NOT_FOUND]: {
+        statusCode: StatusCode.Bad_Request,
+        message: 'Invalid Credentials or access Token not found.'
+    }
 };
 
 export { ErrorCode, ErrorList };
