@@ -7,7 +7,7 @@ import { ErrorCode } from '../utility/error';
 import { StatusCode } from '../utility/http.enum';
 import { ISimulatorEvent } from '../types/simulator.type';
 
-const fetchAccessTokenFromClient = async (): Promise<string> => {
+const fetchAccessToken = async (): Promise<string> => {
     try {
         const result = await simulatorHttpClient.post(
             config.SIMULATOR_AUTH_URL, {
@@ -16,21 +16,23 @@ const fetchAccessTokenFromClient = async (): Promise<string> => {
         });
         const response = get(result, ['data', 'token']);
         if (!response) {
-            throw new AppError(ErrorCode.ACCESS_TOKEN_NOT_FOUND);
+            logger.error(`Access Token Not found from Simulator.`);
+            throw new AppError(ErrorCode.INVALID_CREDENTIALS);
         }
+        logger.info(`Access Token value : ${response}`);
         return response;
     } catch (err) {
         logger.error(`Invalid Credentials/access Token Not Found for email ${config.EMAIL}, status: ${err.response.status} 
             and error : ${JSON.stringify(err.response.data)}`);
         if (err.response.status === 503) {
             await new Promise(resolve => setTimeout(resolve, 3000));
-            return fetchAccessTokenFromClient();
+            return fetchAccessToken();
         }
-        throw new AppError(ErrorCode.ACCESS_TOKEN_NOT_FOUND);
+        throw err;
     }
 }
 
-const getResultFromSimulator = async (accessToken: string): Promise<ISimulatorEvent> => {
+const getResultFromSimulator = async (accessToken: string): Promise<ISimulatorEvent | null> => {
     try {
         logger.info(`getResultFromSimulator : Making a request to result end point`);
         const result = await simulatorHttpClient.get(
@@ -47,12 +49,12 @@ const getResultFromSimulator = async (accessToken: string): Promise<ISimulatorEv
         }
         return result.data as ISimulatorEvent;
     } catch (err) {
-        logger.info(`getResultFromSimulator : Error status : ${err.response.status} and error : ${err.response.data}`);
+        logger.info(`getResultFromSimulator : Error status : ${err.response.status} and error : ${JSON.stringify(err.response.data)}`);
         throw err;
     }
 }
 const simulatorExternalRepository = {
-    fetchAccessTokenFromClient,
+    fetchAccessToken,
     getResultFromSimulator
 };
 

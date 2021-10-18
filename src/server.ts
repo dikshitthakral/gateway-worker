@@ -1,6 +1,6 @@
 import { connectMongo } from "./database";
 import logger from "./logger";
-
+import simulatorService from "./services/simulator.service";
 
 class Server {
     constructor() { }
@@ -8,7 +8,7 @@ class Server {
         try {
             await connectMongo();
             logger.info(`Mongodb running , initializing worker.`);
-            // initialize worker method.
+            await simulatorService.subscribeEvents();
             return;
         } catch (err) {
             logger.error(`Error in starting server ${err}`);
