@@ -13,6 +13,9 @@ module.exports = {
         'no-console': 'error',
         '@typescript-eslint/explicit-function-return-type': 'off',
         '@typescript-eslint/explicit-member-accessibility': 'off',
-        '@typescript-eslint/no-empty-interface': 'warn'
+        '@typescript-eslint/no-empty-interface': 'warn',
+        '@typescript-eslint/no-var-requires': 'off',
+        '@typescript-eslint/interface-name-prefix': 'off',
+        '@typescript-eslint/camelcase': 'off'
     }
 };

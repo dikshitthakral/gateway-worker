@@ -1,5 +1,5 @@
-import axios from "axios";
-import config from "../config";
+import axios from 'axios';
+import config from '../config';
 
 export const simulatorHttpClient = axios.create({
     baseURL: config.SIMULATOR_BASE_URL,

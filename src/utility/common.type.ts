@@ -1,4 +1,4 @@
-import { StatusCode } from "./http.enum";
+import { StatusCode } from './http.enum';
 
 export interface IErrorDetail {
     message: string;

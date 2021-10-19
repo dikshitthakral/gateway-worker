@@ -1,4 +1,3 @@
-
 export interface IHorseResult {
     id: number;
     name: string;
