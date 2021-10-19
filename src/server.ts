@@ -2,7 +2,7 @@ import { connectMongo } from "./database";
 import logger from "./logger";
 import simulatorService from "./services/simulator.service";
 
-class Server {
+export default class Server {
     constructor() { }
     async start() {
         try {

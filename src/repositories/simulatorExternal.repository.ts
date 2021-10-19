@@ -1,4 +1,4 @@
-import { simulatorHttpClient } from '../client/simulatorHttpClient';
+import simulatorHttpClient from '../client/simulatorHttpClient';
 import config from '../config';
 import { get } from 'lodash';
 import logger from '../logger';
@@ -7,6 +7,7 @@ import { ErrorCode } from '../utility/error';
 import { StatusCode } from '../utility/http.enum';
 import { IHorseRacingEvent } from '../types/simulator.type';
 import { setCache, deleteCache, getCache } from '../cache';
+import { setAsyncTimeout } from '../utility/common.utils';
 
 const fetchAccessToken = async (): Promise<string> => {
     try {
@@ -28,13 +29,13 @@ const fetchAccessToken = async (): Promise<string> => {
     } catch (err) {
         logger.error(`Access Token not found for email ${
             config.EMAIL
-        }, status: ${err.response.status} 
-        and error : ${JSON.stringify(err.response.data)}`);
-        if (err.response.status === StatusCode.Service_Unavailable) {
+            }, status: ${err.response && err.response.status} 
+        and error : ${JSON.stringify(err.response && err.response.data)}`);
+        if (err.response && err.response.status === StatusCode.Service_Unavailable) {
             // wait for 3 seconds before making request
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            await setAsyncTimeout();
             return fetchAccessToken();
-        } else if (err.response.data.error === 'Invalid credentials') {
+        } else if (err.response && err.response.data && err.response.data.error === 'Invalid credentials') {
             throw new AppError(ErrorCode.INVALID_CREDENTIALS);
         }
         throw err;
@@ -88,7 +89,7 @@ const getResultFromSimulator = async (): Promise<IHorseRacingEvent | null> => {
     } catch (err) {
         logger.info(
             `getResultFromSimulator : Error status : ${err.response &&
-                err.response.status} and error : ${JSON.stringify(err)}`
+            err.response.status} and error : ${JSON.stringify(err)}`
         );
         if (
             err instanceof AppError &&
@@ -97,12 +98,10 @@ const getResultFromSimulator = async (): Promise<IHorseRacingEvent | null> => {
             throw err;
         }
         await refreshAccessToken();
-        await getResultFromSimulator();
-        return;
+        return getResultFromSimulator();
     }
 };
 const simulatorExternalRepository = {
-    getAccessToken,
     getResultFromSimulator
 };
 

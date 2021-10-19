@@ -2,6 +2,7 @@ import simulatorExternalRepository from '../repositories/simulatorExternal.repos
 import databaseRepository from '../repositories/database.repository';
 import { IHorseRacingEvent } from '../types/simulator.type';
 import logger from '../logger';
+import { setAsyncTimeout } from '../utility/common.utils';
 
 const fetchResults = async (): Promise<IHorseRacingEvent> => {
     let simulatorEvent: IHorseRacingEvent | null;
@@ -11,8 +12,8 @@ const fetchResults = async (): Promise<IHorseRacingEvent> => {
             logger.info(
                 `fetchResults: simulator event value is Empty fetching again.`
             );
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            simulatorEvent = await fetchResults();
+            await setAsyncTimeout();
+            return await fetchResults();
         }
         return simulatorEvent;
     } catch (err) {
