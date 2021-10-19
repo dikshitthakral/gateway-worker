@@ -1,49 +1,32 @@
 import simulatorExternalRepository from '../repositories/simulatorExternal.repository';
-import simulatorWorkerRepository from '../repositories/simulatorWorker.repository';
-import { ISimulatorEvent } from '../types/simulator.type';
+import databaseRepository from '../repositories/database.repository';
+import { IHorseRacingEvent } from '../types/simulator.type';
 import logger from '../logger';
-import { AppError } from '../utility/appError';
-import { ErrorCode } from '../utility/error';
-import { getCache, setCache, deleteCache } from '../cache';
 
-
-const fetchResults = async (accessToken): Promise<ISimulatorEvent> => {
-    let simulatorEvent: ISimulatorEvent | null;
+const fetchResults = async (): Promise<IHorseRacingEvent> => {
+    let simulatorEvent: IHorseRacingEvent | null;
     try {
-        simulatorEvent = await simulatorExternalRepository.getResultFromSimulator(accessToken);
+        simulatorEvent = await simulatorExternalRepository.getResultFromSimulator();
         if (!simulatorEvent) {
             logger.info(`fetchResults: simulator event value is Empty fetching again.`);
             await new Promise(resolve => setTimeout(resolve, 3000));
-            simulatorEvent = await fetchResults(accessToken);
+            simulatorEvent = await fetchResults();
         }
         return simulatorEvent;
     } catch (err) {
-        logger.error(`fetchResults: Error while fetching results`);
+        logger.error(`Error while fetching result ${JSON.stringify(err)}`);
         throw err;
     }
 }
 
-const subscribeEvents = async (): Promise<void> => {
-    try {
-        let accessToken = getCache('accessToken');
-        if (!accessToken) {
-            accessToken = await simulatorExternalRepository.fetchAccessToken();
-            setCache('accessToken', accessToken);
-        }
-        const simulatorEvent: ISimulatorEvent = await fetchResults(accessToken);
-        await simulatorWorkerRepository.createSimulatorEvent(simulatorEvent);
-        await subscribeEvents();
-    }
-    catch (err) {
-        if (err.response.status === 401 && err.response.data.error === 'Invalid credentials') {
-            throw new AppError(ErrorCode.INVALID_CREDENTIALS);
-        }
-        deleteCache('accessToken');
-        await subscribeEvents();
-    }
+const subscribe = async (): Promise<void> => {
+    const horseRacingEvent: IHorseRacingEvent = await fetchResults();
+    await databaseRepository.save(horseRacingEvent);
+    await subscribe();
 }
+
 const simulatorService = {
-    subscribeEvents
+    subscribe
 };
 
 export default simulatorService;

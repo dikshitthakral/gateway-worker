@@ -4,7 +4,7 @@ export interface IHorseResult {
     name: string;
 }
 
-export interface ISimulatorEvent {
+export interface IHorseRacingEvent {
     event: string;
     horse: IHorseResult;
     time: number;

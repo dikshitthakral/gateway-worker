@@ -1,5 +1,5 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
-import { ISimulatorEvent } from '../types/simulator.type';
+import { IHorseRacingEvent } from '../types/simulator.type';
 
 const HorseSchema = new Schema({
     id: {
@@ -12,7 +12,7 @@ const HorseSchema = new Schema({
     }
 }, { timestamps: false, _id: false });
 
-const SimulatorEventsSchema = new Schema({
+const HorseRacingEventsSchema = new Schema({
     event: {
         type: String,
         required: true
@@ -29,9 +29,9 @@ const SimulatorEventsSchema = new Schema({
     timestamps: true
 });
 
-export type SimulatorEventDocument = ISimulatorEvent & Document;
-export const collectionName = 'simulator_event';
-export const SimulatorEventModel: Model<SimulatorEventDocument> = mongoose.model(
+export type HorseRacingEventDocument = IHorseRacingEvent & Document;
+export const collectionName = 'horse_racing_event';
+export const HorseRacingEventModel: Model<HorseRacingEventDocument> = mongoose.model(
     collectionName,
-    SimulatorEventsSchema
+    HorseRacingEventsSchema
 );
