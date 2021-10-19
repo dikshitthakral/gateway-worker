@@ -8,7 +8,7 @@ class Server {
         try {
             await connectMongo();
             logger.info(`Mongodb running , initializing worker.`);
-            await simulatorService.subscribeEvents();
+            await simulatorService.subscribe();
             return;
         } catch (err) {
             logger.error(`Error in starting server ${err}`);
