@@ -97,6 +97,9 @@ const getResultFromSimulator = async (): Promise<IHorseRacingEvent | null> => {
         ) {
             throw err;
         }
+        else if (err.response && err.response.status === StatusCode.Unauthorized) {
+            throw new AppError(ErrorCode.UNAUTHORIZED);
+        }
         await refreshAccessToken();
         return getResultFromSimulator();
     }
