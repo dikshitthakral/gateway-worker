@@ -17,7 +17,7 @@ const ErrorList: IErrorList = {
         message: 'Error occured while performing a particular action.'
     },
     [ErrorCode.INVALID_CREDENTIALS]: {
-        statusCode: StatusCode.Bad_Request,
+        statusCode: StatusCode.Unauthorized,
         message: 'Invalid Credentials or access Token not found.'
     }
 };
